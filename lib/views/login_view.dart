@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/firebase_options.dart';
-
+import 'dart:developer' as devtools show log;
 class LoginView extends StatefulWidget {
-  const LoginView({Key? key}) : super(key: key);
+  const LoginView({super.key});
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -59,28 +57,29 @@ class _LoginViewState extends State<LoginView> {
                       final email = _email.text;
                       final password = _password.text;
                       try{
-                        final UserCredential = await FirebaseAuth.instance.
-                              signInWithEmailAndPassword(
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: email, 
-                        password: password); 
-                        print(UserCredential);
+                        password: password,
+                        ); 
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/notes/', (route)=> false,
+                        );
+
+                       
                       } on FirebaseAuthException catch(e){
                         if(e.code == 'user-not-found'){
-                          print('User not found.');
+                          devtools.log('User not found.');
                         }
                         else if(e.code == 'wrong-password'){
-                          print('Wrong password');
-                         
-                        }
-      
-                      }
-                      
+                          devtools.log('Wrong password');                
+                        }      
+                      }                     
                     },
                     child : const Text('Login'),
                   ),
                   
                   TextButton(onPressed: (){
-                    Navigator.of(context).pushNamedAndRemoveUntil('/register', 
+                    Navigator.of(context).pushNamedAndRemoveUntil('/register/', 
                     (route)=> false,
                     );
                   },
